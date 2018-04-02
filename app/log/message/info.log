@@ -1,0 +1,4 @@
+[qy] GET 200 2282.008 /
+[qy] GET 200 0.908 /app.js
+[qy] GET 404 15.243 /dist/app.js
+[qy] GET 404 11.273 /dist/app.js

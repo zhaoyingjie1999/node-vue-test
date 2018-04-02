@@ -1,0 +1,10 @@
+# ignore Maven generated target folders
+target
+ 
+# ignore eclipse files
+
+.DS_Store
+/target/*
+.vscode/
+node_modules/
+package-lock.json
