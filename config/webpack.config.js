@@ -3,14 +3,15 @@ const path = require('path')
 const webpackHtmlPlugin = require('html-webpack-plugin')
 const copyWebpackPlugin = require('copy-webpack-plugin')
 const cleanWebpackPlugin = require('clean-webpack-plugin')
-
-module.exports = {
+const isDev = require('./config').ISDEV
+var webpackConfig = {
     mode: 'development',
     entry: {
-        app: path.resolve(__dirname, '../src/main.js')
+        app: [path.resolve(__dirname, '../src/main.js')]
     },
     output: {
         filename: '[name].js',
+        publicPath: '/',
         path: path.resolve(__dirname, '../dist/')
     },
     module: {
@@ -25,6 +26,9 @@ module.exports = {
                 options: {
                     loaders: {
                         css: [{
+                                loader: 'style-loader'
+                            },
+                            {
                                 loader: 'css-loader'
                             },
                             {
@@ -32,6 +36,9 @@ module.exports = {
                             }
                         ],
                         scss: [{
+                                loader: 'style-loader'
+                            },
+                            {
                                 loader: 'css-loader'
                             },
                             {
@@ -40,10 +47,7 @@ module.exports = {
                             {
                                 loader: 'sass-loader'
                             }
-                        ],
-                        js: [{
-                            loader: 'babel-loader'
-                        }]
+                        ]
                     }
                 }
             },
@@ -85,11 +89,13 @@ module.exports = {
     resolve: {
         extensions: ['.js', '.css', '.vue'],
         alias: {
-            '@app': path.resolve(__dirname, '../app/')
+            'vue': 'vue/dist/vue.js',
+            '@app': path.resolve(__dirname, '../app/'),
+            '~api': path.resolve(__dirname, '../src/api'),
+            '~utils': path.resolve(__dirname, '../src/utils')
         }
     },
     plugins: [
-        new webpack.HotModuleReplacementPlugin(),
         new copyWebpackPlugin([{
             from: path.resolve(__dirname, '../src/static'),
             to: 'static',
@@ -106,3 +112,13 @@ module.exports = {
         })
     ]
 }
+
+if (isDev) {
+    webpackConfig.entry.app.push('webpack-hot-middleware/client?reload=true')
+    webpackConfig.plugins.push(new webpack.HotModuleReplacementPlugin())
+} else {
+    webpackConfig.mode = 'production'
+}
+
+
+module.exports = webpackConfig

@@ -14,7 +14,6 @@ const app = express()
 const logStream = fs.createWriteStream(path.join(__dirname, './app/log/message/info.log'), { flag: 'qy' })
 const config = require('./config/config.js')
 
-
 // 设置api接口
 app.use('/api', router)
 
@@ -28,14 +27,25 @@ app.use(history({
 
 app.use(express.static('./src/assert'))
     // 解析request.body的内容
-    // app.use(bodyParser.json());
-    // app.use(bodyParser.urlencoded());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
 morgan.format('qy', '[qy] :method :status :response-time :url')
 
 app.use(morgan('qy', {
     stream: logStream
 }))
 
+app.all('*', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
+    res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+    res.header("X-Powered-By", ' 3.2.1')
+    if (req.method == "OPTIONS") {
+        res.send(200)
+    } else {
+        next()
+    }
+});
 
 // webpack启动
 const compiler = webpack(webpackConfig)
@@ -53,17 +63,19 @@ const compiler = webpack(webpackConfig)
 //     if (err) console.log('webpack 出错啦')
 // })
 
-app.use(devMiddleware(compiler, {
-    hot: true,
-    publicPath: '/',
-    quiet: true
-}))
-app.use(hotMiddleware(compiler, {
-    path: '/__webpack_hmr'
-}))
+if (config.ISDEV) {
+    app.use(devMiddleware(compiler, {
+        hot: true,
+        publicPath: '/',
+        quiet: true
+    }))
+    app.use(hotMiddleware(compiler, {
+        path: '/__webpack_hmr'
+    }))
+}
 
 app.get('/', function(req, res) {
-    res.render('./dist/index.html')
+    res.render('./index.html')
 })
 
 app.use(function(req, res, next) {
@@ -76,8 +88,8 @@ app.use(function(err, req, res, next) {
     res.send('error')
 })
 
-app.listen(9090, function(err) {
-    let url = 'http://localhost:9090'
+app.listen(config.PORT, function(err) {
+    let url = `http://localhost:${config.PORT}`
     console.log('服务启动完成', url)
-    opn(url)
+        // opn(url)
 })

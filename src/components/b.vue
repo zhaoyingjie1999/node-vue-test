@@ -1,7 +1,7 @@
 <template>
 <div>
     <h1>
-        This is Page A
+        This is Page B
     </h1>
 </div>
 </template>

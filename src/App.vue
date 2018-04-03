@@ -1,24 +1,28 @@
 <template>
 <div id="app">
-    <div>
-        {{ message }}
-    </div>
-    <textarea v-model="message"></textarea>
+    <transition>
+        <router-view></router-view>
+    </transition>
 </div>
 </template>
 
 <script>
-import A from './components/a'
 
 export default {
     data() {
         return {
-            message: ''
         }
     }
 }
 </script>
 
 <style lang="scss">
-
+#app {
+}
+html, body, #app {
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    height: 100%;
+}
 </style>
