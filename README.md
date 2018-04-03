@@ -4,7 +4,7 @@
 
 前后端分离
 
-前端采用Vue, UI框架为Element UI, 后端采用Express, MongoDB, 前后端通讯使用JsonWebToken, 采用webpack打包
+前端采用Vue全家桶, UI框架为Element UI, 后端采用Express, MongoDB, 前后端通讯使用JsonWebToken, 采用webpack打包
 
 * [vue](https://cn.vuejs.org/)
 * [express](http://www.expressjs.com.cn/)
