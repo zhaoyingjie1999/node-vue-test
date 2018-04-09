@@ -4,7 +4,7 @@ module.exports = {
     JWT: 'qy',
     PORT: 9090,
     DATABASE: {
-        HOST: 'localhost:27017',
+        HOST: '127.0.0.1:27017',
         USER: 'root',
         PASS: '123456',
         DATABASE: 'test'

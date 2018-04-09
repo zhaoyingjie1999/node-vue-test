@@ -19,6 +19,7 @@
         </el-form-item>
         <el-form-item>
             <el-button type="primary" @click="registered">注册</el-button>
+            <el-button type="text" @click="goToLogin">已有账号, 登录</el-button>
         </el-form-item>
     </el-form>
 </div>
@@ -48,6 +49,11 @@ export default {
                 console.log('注册失败', res)
             })
         },
+        goToLogin() {
+            this.$router.push({
+                path: '/login'
+            })
+        }
     }
 }
 </script>

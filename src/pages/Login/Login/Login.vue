@@ -18,6 +18,9 @@
 
 <script>
 import { userLogin } from '~api'
+import {
+    setToken
+} from '~utils/token'
 
 export default {
     data() {
@@ -33,6 +36,11 @@ export default {
             console.log('登录')
             userLogin(this.form.name, this.form.pass).then(res => {
                 console.log('登录成功', res)
+                setToken(res.data.token)
+                this.$store.dispatch('userLogin', res.data.user)
+                this.$router.push({
+                    path: '/index'
+                })
             }).catch(res => {
                 console.log('登录失败', res)
             })

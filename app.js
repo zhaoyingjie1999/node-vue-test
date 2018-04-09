@@ -13,6 +13,8 @@ const router = require('./app/router/index').app
 const app = express()
 const logStream = fs.createWriteStream(path.join(__dirname, './app/log/message/info.log'), { flag: 'qy' })
 const config = require('./config/config.js')
+const server = require('http').createServer(app)
+const io = require('socket.io')(server)
 
 // 设置api接口
 app.use('/api', router)
@@ -25,7 +27,7 @@ app.use(history({
     }]
 }))
 
-app.use(express.static('./src/assert'))
+app.use('/', express.static('./src/assert'))
     // 解析request.body的内容
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
@@ -88,7 +90,24 @@ app.use(function(err, req, res, next) {
     res.send('error')
 })
 
-app.listen(config.PORT, function(err) {
+io.on('connection', function(socket) {
+    let n = 0
+    setInterval(function() {
+        socket.emit('test', {
+            message: 'test' + n
+        })
+        n += 1
+    }, 10000)
+    socket.on('test', function(data) {
+        console.log('socket on test ', data)
+        socket.emit('test', {
+            message: 'test'
+        })
+
+    })
+})
+
+server.listen(config.PORT, function(err) {
     let url = `http://localhost:${config.PORT}`
     console.log('服务启动完成', url)
         // opn(url)
