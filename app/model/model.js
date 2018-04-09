@@ -136,6 +136,22 @@ class Model {
     }
 
     /**
+     * 根据id查询一条数据
+     * 
+     * @param {String} name 表名
+     * @param {Object} id id
+     * @returns {Object} 
+     */
+    findId(name = '', id) {
+        this.getClient(name).then(db => {
+            db.findById(id, (err, data) => {
+                if (err) return Promise.reject(err)
+                return Promise.resolve(data)
+            })
+        }).catch(message => Promise.reject(message))
+    }
+
+    /**
      * 删除数据
      * 
      * @param {String} name 表名

@@ -67,14 +67,12 @@ router.use(function(req, res, next) {
 
 // 登录
 router.post('/auth/login', function(req, res) {
-    console.log('login', req.body)
-    User.findOne({
+    Model.findOne('users', {
         name: req.body.name
-    }, function(err, data) {
-        if (err) console.log('user find error', err)
+    }).then(data => {
         if (data !== null) {
             if (req.body.pass === data.pass) {
-                res.status(200).json({
+                return res.status(200).json({
                     status: 200,
                     data: {
                         user: {
@@ -92,14 +90,14 @@ router.post('/auth/login', function(req, res) {
                     message: '登录成功'
                 })
             } else {
-                res.status(400).json({
+                return res.status(400).json({
                     status: 400,
                     message: '密码错误'
                 })
             }
         } else {
-            res.status(401).json({
-                status: 401,
+            return res.status(403).json({
+                status: 403,
                 message: '没有找到该用户'
             })
         }
@@ -108,61 +106,59 @@ router.post('/auth/login', function(req, res) {
 
 // 注册
 router.post('/auth/registered', function(req, res) {
-    console.log('registered', req.body)
-    console.log('res --------> ', res)
-    User.findOne({
+    Model.findOne('users', {
         name: req.body.name
-    }, function(err, data) {
-        if (err) console.log('User Find Error', err)
-        console.log(data)
+    }).then(data => {
         if (data !== null) {
-            console.log('res --------> 2', res)
-            res.status(400).json({
+            return res.status(400).json({
                 status: 400,
                 message: '此用户已经注册过了'
             })
-            return
         }
-        var user = new User({
+        Model.create('users', {
             name: req.body.name,
             pass: req.body.pass,
             age: req.body.age,
             sex: req.body.sex,
             phone: req.body.phone,
-        })
-        user.save(function(err, data) {
-            if (err) console.log('User save error ', err)
-            console.log('res --------> 3', res)
-            res.status(200).json({
+        }).then(addRes => {
+            return res.status(200).json({
                 status: 200,
                 message: '注册成功, 请登录'
             })
-            return
         })
     })
 })
 
 router.post('/auth/reset', function(req, res) {
     console.log('login', req.body)
-    var token = jwt.sign({
-        name: '呵呵哒',
-        age: '18',
-        sex: '男'
-    }, config.JWT, {
-        expiresIn: 60 * 60 * 2
-    })
-    res.status(200).json({
-        token: token
+    Model.findOne('users', {
+        name: req.body.name
+    }).then(data => {
+        if (data !== null) {
+            Model.update('users', {
+                phone: req.body.phone
+            }, {
+                pass: req.body.pass
+            }).then(udata => {
+                return res.status(200).json({
+                    status: 200,
+                    message: '重置成功, 请重新登录'
+                })
+            })
+        } else {
+            return res.status(403).json({
+                status: 403,
+                message: '没有找到该用户'
+            })
+        }
     })
 })
 
 router.get('/getUser', function(req, res) {
-    console.log('api user')
-    console.log('data ', req.qy)
-    User.findById(req.qy.id, function(err, data) {
-        if (err) console.log('getUser Error ', err)
+    Model.findId('users', req.qy.id).then(data => {
         if (data !== null) {
-            res.status(200).json({
+            return res.status(200).json({
                 status: 200,
                 data: {
                     name: data.name,
@@ -172,14 +168,12 @@ router.get('/getUser', function(req, res) {
                 },
                 message: '请求成功'
             })
-            return
         } else {
-            res.status(403).json({
+            return res.status(403).json({
                 status: 403,
                 data: {},
                 message: '用户未找到'
             })
-            return
         }
     })
 })
