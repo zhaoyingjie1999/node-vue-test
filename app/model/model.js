@@ -2,6 +2,7 @@ const Promise = require('bluebird')
 const config = require('../../config/config')
 const dConfig = require('../../config/database.config')
 const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
 // 连接mongodb
 mongoose.connect(`mongodb://${config.DATABASE.USER}:${config.DATABASE.PASS}@${config.DATABASE.HOST}/${config.DATABASE.DATABASE}?authSource=admin`, function(err) {
@@ -41,13 +42,14 @@ class Model {
      */
     getClient(name = '') {
         if (!name) return Promise.reject('表名不能为空')
-        if (this.clientList[name]) {
+        if (this.clientList[name] !== undefined && this.clientList[name] !== null) {
             return Promise.resolve(this.clientList[name])
         } else {
-            if (this.tableSchema[name]) {
-                let schema = new mongoose.Schema(this.tableSchema[name])
-                this.clientList[name] = mongoose.model(name, schema)
-                return Promise.resolve(this.clientList[name])
+            if (this.tableSchema[name] !== null && this.tableSchema[name] !== undefined) {
+                let schema = new Schema(this.tableSchema[name])
+                let client = mongoose.model(name, schema)
+                this.clientList[name] = client
+                return Promise.resolve(client)
             } else {
                 return Promise.reject('请配置好数据表的Schema')
             }
@@ -62,7 +64,7 @@ class Model {
      * @returns {Object}
      */
     create(name = '', ob = {}) {
-        this.getClient(name).then(db => {
+        return this.getClient(name).then(db => {
             db.create(ob, (err, data) => {
                 if (err) return Promise.reject(err)
                 return Promise.resolve(data)
@@ -78,7 +80,7 @@ class Model {
      * @returns {Array}
      */
     createAll(name = '', arr = []) {
-        this.getClient(name).then(db => {
+        return this.getClient(name).then(db => {
             db.insertMany(arr, (err, data) => {
                 if (err) return Promise.reject(err)
                 return Promise.resolve(data)
@@ -95,7 +97,7 @@ class Model {
      * @returns {Object}
      */
     update(name = '', where = {}, ob = {}) {
-        this.getClient(name).then(db => {
+        return this.getClient(name).then(db => {
             db.update(where, ob, (err, data) => {
                 if (err) return Promise.reject(err)
                 return Promise.resolve(data)
@@ -111,7 +113,7 @@ class Model {
      * @returns {Array}
      */
     find(name = '', where = {}) {
-        this.getClient(name).then(db => {
+        return this.getClient(name).then(db => {
             db.find(where, (err, data) => {
                 if (err) return Promise.reject(err)
                 return Promise.resolve(data)
@@ -127,7 +129,7 @@ class Model {
      * @returns {Object} 
      */
     findOne(name = '', where = {}) {
-        this.getClient(name).then(db => {
+        return this.getClient(name).then(db => {
             db.findOne(where, (err, data) => {
                 if (err) return Promise.reject(err)
                 return Promise.resolve(data)
@@ -143,7 +145,7 @@ class Model {
      * @returns {Object} 
      */
     findId(name = '', id) {
-        this.getClient(name).then(db => {
+        return this.getClient(name).then(db => {
             db.findById(id, (err, data) => {
                 if (err) return Promise.reject(err)
                 return Promise.resolve(data)
@@ -159,7 +161,7 @@ class Model {
      * @returns {Object}
      */
     remove(name = '', where = '') {
-        this.getClient(name).then(db => {
+        return this.getClient(name).then(db => {
             db.remove(where, (err, data) => {
                 if (err) return Promise.reject(err)
                 return Promise.resolve(data)
@@ -175,7 +177,7 @@ class Model {
      * @returns {Number}
      */
     count(name = '', where = {}) {
-        this.getClient(name).then(db => {
+        return this.getClient(name).then(db => {
             db.count(where, (err, count) => {
                 if (err) return Promise.reject(err)
                 return Promise.resolve(count)
@@ -193,7 +195,7 @@ class Model {
      * @returns {Array}
      */
     page(name = '', size = 0, number = 0, where = {}) {
-        this.getClient(name).then(db => {
+        return this.getClient(name).then(db => {
             db.find(where).limit(size).skip(size * number).exec((err, data) => {
                 if (err) return Promise.reject(err)
                 return Promise.resolve(data)

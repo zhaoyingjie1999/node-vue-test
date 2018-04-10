@@ -86,7 +86,7 @@ app.use(function(req, res, next) {
 })
 
 app.use(function(err, req, res, next) {
-    console.log('error 中间件 ')
+    console.log('error 中间件 ', err)
     res.send('error')
 })
 

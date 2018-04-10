@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken')
 const config = require('../../config/config')
 const bodyParser = require('body-parser')
 const router = express.Router()
-const User = require('../model/users')
+    // const User = require('../model/users')
 const Model = require('../model/model')
 
 // 写入log文件的stream

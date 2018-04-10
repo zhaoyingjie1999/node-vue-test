@@ -1,5 +1,5 @@
 module.exports = {
-    users: {
+    'users': {
         name: {
             type: String
         },
