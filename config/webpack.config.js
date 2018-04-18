@@ -132,7 +132,7 @@ var webpackConfig = {
 }
 
 if (isDev) {
-    webpackConfig.entry.app.push('webpack-hot-middleware/client?reload=true')
+    webpackConfig.entry.app.push('webpack-hot-middleware/client?reload=true&log=false&noInfo=true')
     webpackConfig.plugins.push(new webpack.HotModuleReplacementPlugin())
     webpackConfig.plugins.push(new friendlyErrorsWebpackPlugin())
 } else {
