@@ -13,7 +13,16 @@ export default new VueRouter({
             beforeRouteEnter: (to, from, next) => {
                 setTitle('首页')
                 next()
-            }
+            },
+        },
+        {
+            path: '/socket',
+            component: resolve => require(['../pages/Index/Socket/Socket.vue'], resolve),
+            beforeRouteEnter: (to, from, next) => {
+                console.log('路由呵呵哒')
+                setTitle('socket 测试')
+                next()
+            },
         },
         {
             path: '/login',

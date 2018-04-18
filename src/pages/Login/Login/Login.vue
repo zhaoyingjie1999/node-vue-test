@@ -31,6 +31,8 @@ export default {
             }
         }
     },
+    created() {
+    },
     methods: {
         login() {
             console.log('登录')
@@ -39,7 +41,7 @@ export default {
                 setToken(res.data.token)
                 this.$store.dispatch('userLogin', res.data.user)
                 this.$router.push({
-                    path: '/index'
+                    path: '/socket'
                 })
             }).catch(res => {
                 console.log('登录失败', res)

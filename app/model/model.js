@@ -41,19 +41,21 @@ class Model {
      * @returns {Object}
      */
     getClient(name = '') {
-        if (!name) return Promise.reject('表名不能为空')
-        if (this.clientList[name] !== undefined && this.clientList[name] !== null) {
-            return Promise.resolve(this.clientList[name])
-        } else {
-            if (this.tableSchema[name] !== null && this.tableSchema[name] !== undefined) {
-                let schema = new Schema(this.tableSchema[name])
-                let client = mongoose.model(name, schema)
-                this.clientList[name] = client
-                return Promise.resolve(client)
+        return new Promise((resolve, reject) => {
+            if (!name) reject('表名不能为空')
+            if (this.clientList[name] !== undefined && this.clientList[name] !== null) {
+                resolve(this.clientList[name])
             } else {
-                return Promise.reject('请配置好数据表的Schema')
+                if (this.tableSchema[name] !== null && this.tableSchema[name] !== undefined) {
+                    let schema = new Schema(this.tableSchema[name])
+                    let client = mongoose.model(name, schema)
+                    this.clientList[name] = client
+                    resolve(client)
+                } else {
+                    reject('请配置好数据表的Schema')
+                }
             }
-        }
+        })
     }
 
     /**
@@ -64,12 +66,14 @@ class Model {
      * @returns {Object}
      */
     create(name = '', ob = {}) {
-        return this.getClient(name).then(db => {
-            db.create(ob, (err, data) => {
-                if (err) return Promise.reject(err)
-                return Promise.resolve(data)
-            })
-        }).catch(message => Promise.reject(message))
+        return new Promise((resolve, reject) => {
+            this.getClient(name).then(db => {
+                db.create(ob, (err, data) => {
+                    if (err) reject(err)
+                    resolve(data)
+                })
+            }).catch(message => reject(message))
+        })
     }
 
     /**
@@ -80,12 +84,14 @@ class Model {
      * @returns {Array}
      */
     createAll(name = '', arr = []) {
-        return this.getClient(name).then(db => {
-            db.insertMany(arr, (err, data) => {
-                if (err) return Promise.reject(err)
-                return Promise.resolve(data)
-            })
-        }).catch(message => Promise.reject(message))
+        return new Promise((resolve, reject) => {
+            this.getClient(name).then(db => {
+                db.insertMany(arr, (err, data) => {
+                    if (err) reject(err)
+                    resolve(data)
+                })
+            }).catch(message => reject(message))
+        })
     }
 
     /**
@@ -97,12 +103,14 @@ class Model {
      * @returns {Object}
      */
     update(name = '', where = {}, ob = {}) {
-        return this.getClient(name).then(db => {
-            db.update(where, ob, (err, data) => {
-                if (err) return Promise.reject(err)
-                return Promise.resolve(data)
-            })
-        }).catch(message => Promise.reject(message))
+        return new Promise((resolve, reject) => {
+            this.getClient(name).then(db => {
+                db.update(where, ob, (err, data) => {
+                    if (err) reject(err)
+                    resolve(data)
+                })
+            }).catch(message => reject(message))
+        })
     }
 
     /**
@@ -113,12 +121,14 @@ class Model {
      * @returns {Array}
      */
     find(name = '', where = {}) {
-        return this.getClient(name).then(db => {
-            db.find(where, (err, data) => {
-                if (err) return Promise.reject(err)
-                return Promise.resolve(data)
-            })
-        }).catch(message => Promise.reject(message))
+        return new Promise((resolve, reject) => {
+            this.getClient(name).then(db => {
+                db.find(where, (err, data) => {
+                    if (err) reject(err)
+                    resolve(data)
+                })
+            }).catch(message => reject(message))
+        })
     }
 
     /**
@@ -129,12 +139,15 @@ class Model {
      * @returns {Object} 
      */
     findOne(name = '', where = {}) {
-        return this.getClient(name).then(db => {
-            db.findOne(where, (err, data) => {
-                if (err) return Promise.reject(err)
-                return Promise.resolve(data)
-            })
-        }).catch(message => Promise.reject(message))
+        return new Promise((resolve, reject) => {
+            this.getClient(name).then(db => {
+                db.findOne(where, (err, data) => {
+                    console.log('查找成功, ', data)
+                    if (err) reject(err)
+                    resolve(data)
+                })
+            }).catch(message => reject(message))
+        })
     }
 
     /**
@@ -145,12 +158,14 @@ class Model {
      * @returns {Object} 
      */
     findId(name = '', id) {
-        return this.getClient(name).then(db => {
-            db.findById(id, (err, data) => {
-                if (err) return Promise.reject(err)
-                return Promise.resolve(data)
-            })
-        }).catch(message => Promise.reject(message))
+        return new Promise((resolve, reject) => {
+            this.getClient(name).then(db => {
+                db.findById(id, (err, data) => {
+                    if (err) reject(err)
+                    resolve(data)
+                })
+            }).catch(message => reject(message))
+        })
     }
 
     /**
@@ -161,12 +176,14 @@ class Model {
      * @returns {Object}
      */
     remove(name = '', where = '') {
-        return this.getClient(name).then(db => {
-            db.remove(where, (err, data) => {
-                if (err) return Promise.reject(err)
-                return Promise.resolve(data)
-            })
-        }).catch(message => Promise.reject(message))
+        return new Promise((resolve, reject) => {
+            this.getClient(name).then(db => {
+                db.remove(where, (err, data) => {
+                    if (err) reject(err)
+                    resolve(data)
+                })
+            }).catch(message => reject(message))
+        })
     }
 
     /**
@@ -177,12 +194,14 @@ class Model {
      * @returns {Number}
      */
     count(name = '', where = {}) {
-        return this.getClient(name).then(db => {
-            db.count(where, (err, count) => {
-                if (err) return Promise.reject(err)
-                return Promise.resolve(count)
-            })
-        }).catch(message => Promise.reject(message))
+        return new Promise((resolve, reject) => {
+            this.getClient(name).then(db => {
+                db.count(where, (err, count) => {
+                    if (err) reject(err)
+                    resolve(count)
+                })
+            }).catch(message => reject(message))
+        })
     }
 
     /**
@@ -195,12 +214,14 @@ class Model {
      * @returns {Array}
      */
     page(name = '', size = 0, number = 0, where = {}) {
-        return this.getClient(name).then(db => {
-            db.find(where).limit(size).skip(size * number).exec((err, data) => {
-                if (err) return Promise.reject(err)
-                return Promise.resolve(data)
-            })
-        }).catch(message => Promise.reject(message))
+        return new Promise((resolve, reject) => {
+            this.getClient(name).then(db => {
+                db.find(where).limit(size).skip(size * number).exec((err, data) => {
+                    if (err) reject(err)
+                    resolve(data)
+                })
+            }).catch(message => reject(message))
+        })
     }
 }
 

@@ -23,6 +23,7 @@ router.beforeEach((to, from, next) => {
                 getUser().then(res => {
                     console.log('getUser', res)
                     store.dispatch('userLogin', res.data)
+                    next()
                 }).catch(res => {
                     next('/login')
                 })

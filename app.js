@@ -69,10 +69,12 @@ if (config.ISDEV) {
     app.use(devMiddleware(compiler, {
         hot: true,
         publicPath: '/',
-        quiet: true
+        quiet: true,
+        stats: "error-only"
     }))
     app.use(hotMiddleware(compiler, {
-        path: '/__webpack_hmr'
+        path: '/__webpack_hmr',
+        log: () => {}
     }))
 }
 

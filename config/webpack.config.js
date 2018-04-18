@@ -1,13 +1,15 @@
 const webpack = require('webpack')
 const path = require('path')
 const webpackHtmlPlugin = require('html-webpack-plugin')
+const friendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin')
 const copyWebpackPlugin = require('copy-webpack-plugin')
 const cleanWebpackPlugin = require('clean-webpack-plugin')
 const isDev = require('./config').ISDEV
+
 var webpackConfig = {
     mode: 'development',
     entry: {
-        app: [path.resolve(__dirname, '../src/main.js')]
+        app: [path.resolve(__dirname, '../src/main.js')],
     },
     output: {
         filename: '[name].js',
@@ -18,6 +20,7 @@ var webpackConfig = {
         rules: [{
                 test: /\.js$/,
                 include: [path.resolve(__dirname, '../src')],
+                exclude: [path.resolve(__dirname, '../node_modules')],
                 loader: 'babel-loader'
             },
             {
@@ -95,7 +98,25 @@ var webpackConfig = {
             '~utils': path.resolve(__dirname, '../src/utils')
         }
     },
+    optimization: {
+        minimize: !isDev,
+        // splitChunks: {
+        //     chunks: 'all',
+        //     minSize: 30000,
+        //     minChunks: 1,
+        //     cacheGroups: {
+        //         vendors: {
+        //             test: /[\\/]node_modules[\\/]/,
+        //             priority: -10
+        //         },
+        //     }
+        // }
+    },
     plugins: [
+        // new webpack.DllPlugin({
+        //     context: __dirname,
+        //     manifest: require('./lib-config.json')
+        // }),
         new copyWebpackPlugin([{
             from: path.resolve(__dirname, '../src/static'),
             to: 'static',
@@ -105,10 +126,7 @@ var webpackConfig = {
         new webpackHtmlPlugin({
             filename: 'index.html',
             template: 'index.html',
-            inject: true,
-            chunks: [
-                'app'
-            ]
+            inject: true
         })
     ]
 }
@@ -116,6 +134,7 @@ var webpackConfig = {
 if (isDev) {
     webpackConfig.entry.app.push('webpack-hot-middleware/client?reload=true')
     webpackConfig.plugins.push(new webpack.HotModuleReplacementPlugin())
+    webpackConfig.plugins.push(new friendlyErrorsWebpackPlugin())
 } else {
     webpackConfig.mode = 'production'
 }

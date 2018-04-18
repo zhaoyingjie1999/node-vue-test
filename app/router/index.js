@@ -70,8 +70,10 @@ router.post('/auth/login', function(req, res) {
     Model.findOne('users', {
         name: req.body.name
     }).then(data => {
-        if (data !== null) {
+        console.log('查找完成', data)
+        if (data !== null && data !== undefined) {
             if (req.body.pass === data.pass) {
+                console.log('登陆成功')
                 return res.status(200).json({
                     status: 200,
                     data: {
@@ -90,12 +92,14 @@ router.post('/auth/login', function(req, res) {
                     message: '登录成功'
                 })
             } else {
+                console.log('密码错误')
                 return res.status(400).json({
                     status: 400,
                     message: '密码错误'
                 })
             }
         } else {
+            console.log('没找到用户')
             return res.status(403).json({
                 status: 403,
                 message: '没有找到该用户'
@@ -109,7 +113,8 @@ router.post('/auth/registered', function(req, res) {
     Model.findOne('users', {
         name: req.body.name
     }).then(data => {
-        if (data !== null) {
+        console.log('zhuce, ', data)
+        if (data !== null && data !== undefined) {
             return res.status(400).json({
                 status: 400,
                 message: '此用户已经注册过了'
@@ -135,7 +140,7 @@ router.post('/auth/reset', function(req, res) {
     Model.findOne('users', {
         name: req.body.name
     }).then(data => {
-        if (data !== null) {
+        if (data !== null && data !== undefined) {
             Model.update('users', {
                 phone: req.body.phone
             }, {
@@ -157,7 +162,7 @@ router.post('/auth/reset', function(req, res) {
 
 router.get('/getUser', function(req, res) {
     Model.findId('users', req.qy.id).then(data => {
-        if (data !== null) {
+        if (data !== null && data !== undefined) {
             return res.status(200).json({
                 status: 200,
                 data: {
