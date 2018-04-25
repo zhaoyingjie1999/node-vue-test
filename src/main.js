@@ -6,6 +6,7 @@ import App from './App.vue'
 import { getUser } from '~api'
 import { getToken, isToken } from '~utils/token'
 import './assets/css/reset.css'
+import './assets/css/index.css'
 // import 'element-ui/lib/theme-default/index.css'
 import './assets/scss/element.scss'
 

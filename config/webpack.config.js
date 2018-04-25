@@ -56,11 +56,11 @@ var webpackConfig = {
             },
             {
                 test: /\.css$/,
-                loader: ['style-loader', 'css-loader']
+                loader: ['style-loader', 'css-loader', 'postcss-loader']
             },
             {
                 test: /\.scss$/,
-                loader: ['style-loader', 'css-loader', 'sass-loader']
+                loader: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader']
             },
             {
                 test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
