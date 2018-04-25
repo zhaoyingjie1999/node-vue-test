@@ -1,6 +1,5 @@
 module.exports = {
-    // ISDEV: process.argv[2] === 'dev' ? true : false,
-    ISDEV: true,
+    ISDEV: process.argv[2] === 'dev' ? true : false,
     JWT: 'qy',
     PORT: 9090,
     DATABASE: {
